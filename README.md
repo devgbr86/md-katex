@@ -27,11 +27,3 @@ Feito com **Marked.js**, **KaTeX** e **html2pdf.js**.
 | JavaScript (puro) | Lógica principal do editor e da exportação |
 
 ---
-
-## 📦 Instalação
-
-Clone este repositório:
-
-```bash
-git clone https://github.com/seu-usuario/editor-markdown-katex.git
-cd editor-markdown-katex
