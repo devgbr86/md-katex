@@ -2,355 +2,162 @@
 <html lang="pt-BR">
 
 <head>
-     <meta charset="UTF-8" />
-     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <title>Editor Markdown + KaTeX</title>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Mini Aula de Matemática</title>
 
-     <!-- Libs -->
-     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+     <!-- Marked.js -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+
+     <!-- KaTeX CSS -->
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
      <style>
-          * {
-               margin: 0;
-               padding: 0;
-               box-sizing: border-box;
-          }
-
           body {
-               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-               background: #2c2c2c;
-               color: #d4d4d4;
-               min-height: 100vh;
-               display: flex;
-               flex-direction: column;
-               padding: 2rem;
+               font-family: sans-serif;
+               margin: 1rem;
+               background: #fafafa;
+               color: #222;
+               line-height: 1.6;
           }
 
-          header {
+          h2 {
+               margin-bottom: 1rem;
+               font-size: 2rem;
                text-align: center;
-               margin-bottom: 2rem;
-          }
-
-          h1 {
-               font-size: 1.75rem;
-               font-weight: 600;
-               color: #f5f5f5;
-               letter-spacing: 0.5px;
-               margin-bottom: 0.5rem;
-          }
-
-          .subtitle {
-               font-size: 0.95rem;
-               color: #a0a0a0;
-          }
-
-          main {
-               flex: 1;
-               display: flex;
-               flex-direction: column;
-               gap: 1.5rem;
-               max-width: 1000px;
-               width: 100%;
-               margin: 0 auto;
-          }
-
-          .editor-container {
-               flex: 1;
-               display: flex;
-          }
-
-          .panel {
-               width: 100%;
-               display: flex;
-               flex-direction: column;
-               background: #3a3a3a;
-               border-radius: 10px;
-               border: 1px solid #4a4a4a;
-               overflow: hidden;
-          }
-
-          .panel-header {
-               padding: 1rem 1.25rem;
-               background: #424242;
-               border-bottom: 1px solid #4a4a4a;
-               font-size: 0.875rem;
-               font-weight: 600;
-               color: #c0c0c0;
-               text-transform: uppercase;
-               letter-spacing: 0.8px;
           }
 
           textarea {
-               flex: 1;
                width: 100%;
-               padding: 1.5rem;
-               border: none;
-               background: #333;
-               color: #e8e8e8;
-               resize: none;
-               font-family: Consolas, Monaco, monospace;
-               font-size: 1rem;
-               line-height: 1.7;
-               outline: none;
-          }
-
-          .controls {
-               display: flex;
-               justify-content: center;
-               padding: 1rem 0;
+               min-height: 250px;
+               font-family: monospace;
+               font-size: 16px;
+               padding: 0.75rem;
+               margin-bottom: 1rem;
+               border: 1px solid #ccc;
+               border-radius: 6px;
+               resize: vertical;
+               box-sizing: border-box;
           }
 
           button {
-               padding: 0.875rem 2.5rem;
-               background: #4a4a4a;
-               color: #e8e8e8;
-               border: 1px solid #5a5a5a;
-               border-radius: 8px;
+               padding: 0.6rem 1.2rem;
                cursor: pointer;
-               font-size: 1rem;
-               font-weight: 500;
-               transition: all 0.2s ease;
+               background: #0078d4;
+               color: white;
+               border: none;
+               border-radius: 6px;
+               font-size: 16px;
+               margin-right: 0.5rem;
+               transition: background 0.3s;
           }
 
-          footer {
-               margin-top: 2rem;
-               text-align: center;
-               font-size: 0.875rem;
-               color: #888;
-               padding-top: 1.5rem;
-               border-top: 1px solid #444;
+          button:hover {
+               background: #005a9e;
           }
 
-          footer a {
-               color: #a0a0a0;
-               text-decoration: none;
+          #rendered-content {
+               border: 1px solid #ccc;
+               padding: 1rem;
+               min-height: 300px;
+               background: #fff;
+               white-space: pre-wrap;
+               font-size: 16px;
+               border-radius: 6px;
+               box-sizing: border-box;
+          }
+
+          /* Responsividade */
+          @media (max-width: 768px) {
+               h2 {
+                    font-size: 1.5rem;
+               }
+
+               textarea {
+                    font-size: 14px;
+               }
+
+               button {
+                    font-size: 14px;
+                    padding: 0.5rem 1rem;
+                    margin-bottom: 0.5rem;
+               }
+
+               #rendered-content {
+                    font-size: 14px;
+                    min-height: 200px;
+               }
+          }
+
+          /* Impressão */
+          @media print {
+
+               textarea,
+               button {
+                    display: none;
+               }
+
+               #rendered-content {
+                    border: none;
+                    background: white;
+                    font-size: 16px;
+               }
           }
      </style>
 </head>
 
 <body>
-     <header>
-          <h1>Editor Markdown + KaTeX</h1>
-          <p class="subtitle">Editor online com suporte a fórmulas matemáticas e exportação PDF</p>
-     </header>
+     <h2>Mini Aula de Matemática</h2>
 
-     <main>
-          <div class="editor-container">
-               <div class="panel">
-                    <div class="panel-header">Editor</div>
-                    <textarea id="editor" placeholder="Digite seu texto em Markdown...
+     <textarea id="editor"># Aula 1: Equação do 1º grau
+
+A forma geral é:
+
+$$
+ax + b = 0
+$$
 
 Exemplo:
-# Título
-**negrito** e *itálico*
 
-Fórmula inline: $E = mc^2$
-
-Fórmula em bloco:
 $$
-\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}
-$$"></textarea>
-               </div>
-          </div>
+2x + 5 = 0
+$$
+</textarea>
 
-          <div class="controls">
-               <button id="exportPdf">Exportar PDF</button>
-          </div>
-     </main>
+     <div>
+          <button onclick="renderAula()">Renderizar</button>
+          <button onclick="exportPDF()">Exportar PDF</button>
+     </div>
 
-     <footer>
-          <p>
-               Editor combinando <strong>Marked.js</strong> e <strong>KaTeX.js</strong><br>
-               <a href="https://github.com/devgbr86" target="_blank">github.com/devgbr86</a>
-          </p>
-     </footer>
+     <div id="rendered-content"><em>Renderize o conteúdo para ver aqui</em></div>
+
+     <!-- KaTeX JS -->
+     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
      <script>
-          const editor = document.getElementById("editor");
-          const exportBtn = document.getElementById("exportPdf");
+          function renderAula() {
+               const editor = document.getElementById("editor").value;
+               const container = document.getElementById("rendered-content");
 
-          // Usa placeholders que o Markdown NÃO interpreta
-          function preprocessMath(text) {
-               const blocks = [];
-               const inlines = [];
+               // Converte Markdown para HTML
+               const htmlContent = marked.parse(editor);
 
-               // Blocos: $$...$$ -> placeholder único (não usa underscores)
-               let processedText = text.replace(/\$\$([\s\S]*?)\$\$/g, (match, formula) => {
-                    const placeholder = `@@@MATH_BLOCK_${blocks.length}@@@`;
-                    blocks.push(formula.trim());
-                    // mantém em linha própria para o marked transformar em <p> se quiser
-                    return `\n\n${placeholder}\n\n`;
+               container.innerHTML = htmlContent;
+
+               // Renderiza fórmulas KaTeX
+               renderMathInElement(container, {
+                    delimiters: [
+                         { left: "$$", right: "$$", display: true },
+                         { left: "\\(", right: "\\)", display: false }
+                    ]
                });
-
-               // Inlines: $...$
-               processedText = processedText.replace(/\$([^\$\n]+?)\$/g, (match, formula) => {
-                    const placeholder = `@@@MATH_INLINE_${inlines.length}@@@`;
-                    inlines.push(formula.trim());
-                    return placeholder;
-               });
-
-               return { processedText, blocks, inlines };
           }
 
-          // Substitui placeholders seguros no HTML gerado
-          function renderMathFormulas(html, blocks, inlines) {
-               console.log('=== INICIANDO RENDERIZAÇÃO KATEX ===');
-
-               // Blocos: substituir tanto a ocorrência direta quanto <p>placeholder</p>
-               blocks.forEach((formula, i) => {
-                    try {
-                         const rendered = katex.renderToString(formula, {
-                              displayMode: true,
-                              throwOnError: false,
-                              trust: true,
-                              strict: "ignore"
-                         });
-
-                         const token = `@@@MATH_BLOCK_${i}@@@`;
-
-                         // Substitui token simples
-                         html = html.split(token).join(`<div class="math-block">${rendered}</div>`);
-
-                         // Substitui caso o token esteja dentro de um <p>
-                         html = html.split(`<p>${token}</p>`).join(`<div class="math-block">${rendered}</div>`);
-
-                         console.log(`✅ Bloco ${i} renderizado:`, formula);
-                    } catch (e) {
-                         console.error('❌ Erro no bloco', i, ':', e);
-                    }
-               });
-
-               // Inlines
-               inlines.forEach((formula, i) => {
-                    try {
-                         const rendered = katex.renderToString(formula, {
-                              displayMode: false,
-                              throwOnError: false,
-                              trust: true,
-                              strict: "ignore"
-                         });
-
-                         const token = `@@@MATH_INLINE_${i}@@@`;
-
-                         // Substitui token simples
-                         html = html.split(token).join(`<span class="math-inline">${rendered}</span>`);
-
-                         // Caso o token tenha sido envolvido por <p> (improvável para inline, mas seguro)
-                         html = html.split(`<p>${token}</p>`).join(`<p><span class="math-inline">${rendered}</span></p>`);
-
-                         console.log(`✅ Inline ${i} renderizado:`, formula);
-                    } catch (e) {
-                         console.error('❌ Erro no inline', i, ':', e);
-                    }
-               });
-
-               return html;
+          function exportPDF() {
+               renderAula();
+               window.print();
           }
-
-          exportBtn.addEventListener('click', async () => {
-               const text = editor.value;
-               if (!text || !text.trim()) {
-                    alert('Digite algo no editor antes de exportar.');
-                    return;
-               }
-
-               exportBtn.disabled = true;
-               exportBtn.textContent = 'Gerando...';
-
-               try {
-                    console.log('Texto original (início):', text.substring(0, 200));
-
-                    // 1) Extrai fórmulas
-                    const { processedText, blocks, inlines } = preprocessMath(text);
-                    console.log('Blocos encontrados:', blocks.length, blocks);
-                    console.log('Inlines encontrados:', inlines.length, inlines);
-                    console.log('Texto processado (início):', processedText.substring(0, 300));
-
-                    // 2) Markdown -> HTML (placeholders permanecem)
-                    let html = marked.parse(processedText);
-                    console.log('HTML antes do KaTeX (início):', html.substring(0, 300));
-
-                    // 3) Renderiza KaTeX substituindo tokens
-                    html = renderMathFormulas(html, blocks, inlines);
-                    console.log('HTML depois do KaTeX (início):', html.substring(0, 500));
-
-                    // 4) Cria elemento temporário com estilos para PDF
-                    const tempDiv = document.createElement('div');
-                    tempDiv.id = 'temp-pdf';
-                    tempDiv.innerHTML = `
-                         <div style="
-                              width: 210mm;
-                              min-height: 297mm;
-                              padding: 20mm;
-                              margin: 0 auto;
-                              background: white;
-                              color: black;
-                              font-family: 'Times New Roman', serif;
-                              font-size: 12pt;
-                              line-height: 1.6;
-                         ">
-                              <style>
-                                   h1, h2, h3, h4, h5, h6 { color: #000; margin-top: 1em; margin-bottom: 0.5em; font-weight: bold; }
-                                   h1 { font-size: 2em; }
-                                   h2 { font-size: 1.5em; }
-                                   h3 { font-size: 1.2em; }
-                                   p { margin-bottom: 1em; color: #000; }
-                                   strong { font-weight: bold; color: #000; }
-                                   em { font-style: italic; }
-                                   ul, ol { margin-left: 2em; margin-bottom: 1em; }
-                                   li { margin-bottom: 0.5em; color: #000; }
-                                   code { background: #f0f0f0; padding: 2px 5px; font-family: monospace; }
-                                   pre { background: #f5f5f5; padding: 10px; overflow-x: auto; margin-bottom: 1em; }
-                                   pre code { background: none; padding: 0; }
-                                   .math-block { margin: 1.5em 0; text-align: center; }
-                                   .math-inline { display: inline-block; vertical-align: middle; }
-                                   .katex { color: #000 !important; }
-                                   .katex-html { color: #000 !important; }
-                              </style>
-                              ${html}
-                         </div>
-                    `;
-
-                    tempDiv.style.position = 'fixed';
-                    tempDiv.style.left = '0';
-                    tempDiv.style.top = '0';
-                    tempDiv.style.zIndex = '-1';
-                    tempDiv.style.visibility = 'hidden';
-
-                    document.body.appendChild(tempDiv);
-                    console.log('Elemento temporário criado');
-
-                    // breve espera para garantir layout (html2canvas precisa do elemento no DOM)
-                    await new Promise(r => setTimeout(r, 600));
-
-                    // 5) Gera PDF com html2pdf
-                    const element = tempDiv.firstElementChild;
-                    const opt = {
-                         margin: 0,
-                         filename: 'documento.pdf',
-                         image: { type: 'jpeg', quality: 0.95 },
-                         html2canvas: { scale: 2, logging: true, useCORS: true },
-                         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                    };
-
-                    await html2pdf().set(opt).from(element).save();
-
-                    // 6) cleanup
-                    tempDiv.remove();
-                    console.log('✅ PDF gerado com sucesso!');
-               } catch (err) {
-                    console.error('❌ ERRO:', err);
-                    alert('Erro ao gerar PDF: ' + (err && err.message ? err.message : err));
-                    const tmp = document.getElementById('temp-pdf');
-                    if (tmp) tmp.remove();
-               } finally {
-                    exportBtn.disabled = false;
-                    exportBtn.textContent = 'Exportar PDF';
-               }
-          });
      </script>
 </body>
 
